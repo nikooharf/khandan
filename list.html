@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>لیست ها</title>
+
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+
+
+
+    <style>
+        h2 {
+            color: white;
+            text-align: center;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        .caseform {
+            background: rgba(19, 35, 47, 1);
+            padding: 20px;
+            max-width: 90%;
+            height: 100px;
+            margin: 40px auto;
+            border-radius: 40px;
+            box-shadow: 0 4px 10px 4px rgba(19, 35, 47, 0.3);
+        }
+
+        .case-content>div {
+            display: none;
+        }
+
+        .case-content>div:first-child {
+            display: block;
+        }
+
+        .pagination a {
+            display: inline-block;
+            text-decoration: none;
+            padding: 15px;
+            background: rgba(160, 179, 176, 0.25);
+            color: #a0b3b0;
+            font-size: 20px;
+            -webkit-transition: .5s ease;
+            transition: .5s ease;
+        }
+
+        .pagination a.active {
+            background: #CE0101;
+            color: #ffffff;
+        }
+
+        .pagination a:hover:not(.active) {
+            background-color: #ddd;
+        }
+
+    </style>
+</head>
+<body dir="rtl">
+<div class="dropdown" style="float: left;left: 20px;top: 20px;">
+    <button id="button" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+    </button>
+    <div id="logout" class="dropdown-menu" style="cursor: pointer">
+        <center>
+            LOG OUT
+        </center>
+    </div>
+</div>
+
+<div class="limiter" style="  background: #f2f2f2;">
+    <div class="container-login100">
+        <ul id="user" class="list-group">
+        </ul>
+    </div>
+    <center>
+        <ul id="page" class="pagination" ></ul>
+    </center>
+</div>
+
+
+<script type="text/javascript">
+$('#logout').click(function () {
+    var date = new Date();
+    var minutes = 30;
+    date.setTime(date.getTime() - (minutes * 60 * 1000));
+    $.cookie("user", null, { expires: date });
+    $.cookie("token", null, { expires: date });
+    location.reload();
+});
+</script>
+
+
+<script type="text/javascript">
+
+    if (!$.cookie("token")){
+        window.location.replace("login.html");
+    }
+    else {
+        $(document).ready(function () {
+            var page ;
+            var url = new URL(window.location.href);
+            var urlPage = url.searchParams.get("page");
+            if (urlPage!=null && urlPage>0){
+                page = urlPage;
+            }
+            else {
+                window.location.replace("list.html?page=1");
+            }
+            $.ajax({
+                type: "get",
+                url: "https://reqres.in/api/users?page="+page,
+                contentType: "application/json; charset=utf-8",
+                crossDomain: true,
+                dataType: "json",
+                success: function (data, status, jqXHR) {
+                    if (data.data.length <= 0){
+                        window.location.replace("list.html?page=1");
+                    }
+
+                    // console.log(data);
+                    // console.log(data.data[0]);
+                    // console.log(data.data[0].last_name);
+                    // console.log(data.data[0].first_name);
+                    // console.log(data.total_pages);
+                    // console.log(data.total);
+                    // console.log(data.per_page);
+                    // console.log(data.page);
+
+                    var user = data.data;
+                    $.each(user, function(index){
+                        $("#user").append('<a href="http://localhost:63342/khandan/user.html?user=' + user[index].id + ' " style="text-decoration:none"> <li class="list-group-item ">' + user[index].first_name +'</li> </a>' );
+                        $("#user").append('<img src="' + user[index].avatar +' ">');
+                    });
+                    pages ="";
+                    for (i = data.total_pages; i > 0 ; i--) {
+                        if (i == page){
+                            pages += '<li  class="disabled"><a   href="http://localhost:63342/khandan/list.html?page='+ i +'">' + i + '</a></li>';
+                        }
+                        else {
+                            pages += '<li ><a   href="http://localhost:63342/khandan/list.html?page='+ i +'">' + i + '</a></li>';
+                        }
+                    }
+                    $("#button").text($.cookie("user"));
+                    $('#page').html(pages);
+                },
+
+                error: function (jqXHR, status) {
+                    // console.log(jqXHR.responseText);
+                    window.location.replace("404.html");
+                }
+            });
+        });
+    }
+</script>
+</div>
+
+
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Login V2</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--===============================================================================================-->	
+	<link rel="icon" type="image/png" href="images/icons/favicon.ico"/>
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="fonts/iconic/css/material-design-iconic-font.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/animate/animate.css">
+<!--===============================================================================================-->	
+	<link rel="stylesheet" type="text/css" href="vendor/css-hamburgers/hamburgers.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/animsition/css/animsition.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/select2/select2.min.css">
+<!--===============================================================================================-->	
+	<link rel="stylesheet" type="text/css" href="vendor/daterangepicker/daterangepicker.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="css/util.css">
+	<link rel="stylesheet" type="text/css" href="css/main.css">
+<!--===============================================================================================-->
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+
+</head>
+<body>
+	<div class="limiter">
+		<div class="container-login100">
+			<div class="wrap-login100">
+				<form id="login" class="login100-form validate-form" method="post">
+					<span class="login100-form-title p-b-26">
+						ورود به سایت
+					</span>
+					<div class="wrap-input100 validate-input" data-validate = "ایمیل معتبر وارد کنید" dir="rtl">
+						<input class="input100" type="text" name="email">
+						<span class="focus-input100" data-placeholder="ایمیل"></span>
+					</div>
+
+					<div class="wrap-input100 validate-input" data-validate="رمز عبور را وارد کنید" dir="rtl">
+						<span class="btn-show-pass">
+							<i class="zmdi zmdi-eye"></i>
+						</span>
+						<input class="input100" type="password" name="password">
+						<span class="focus-input100" data-placeholder="رمز عبور"></span>
+					</div>
+
+					<div class="container-login100-form-btn">
+						<div class="wrap-login100-form-btn">
+							<div class="login100-form-bgbtn"></div>
+							<button class="login100-form-btn">
+								ورود
+							</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+
+	<script>
+		function addData(data){
+			var email = data.email;
+			$.ajax({
+				type: "POST",
+				url: "https://reqres.in/api/login",
+				data: JSON.stringify(data),
+				contentType: "application/json; charset=utf-8",
+				crossDomain: true,
+				dataType: "json",
+				success: function (data, status, jqXHR) {
+					var date = new Date();
+					var minutes = 30;
+					date.setTime(date.getTime() + (minutes * 60 * 1000));
+					$.cookie("token", data.token, { expires: date });
+					$.cookie("user", email, { expires: date });
+					window.location.replace("list.html");
+				},
+				error: function (jqXHR, status) {
+					// console.log(jqXHR.responseText);
+					alert('نام کاربری یا رمز عبور نادرست است');
+				}
+			});
+		}
+
+		$("#login").submit(function(e) {
+			var form = document.getElementById("login");
+			e.preventDefault();
+			// collect the form data while iterating over the inputs
+			var data = {};
+			for (var i = 0; i < form.length; ++i) {
+				var input = form[i];
+				if (input.name) {
+					data[input.name] = input.value;
+				}
+			}
+			addData(data);
+		});
+	</script>
+
+<!--===============================================================================================-->
+<!--	<script src="vendor/jquery/jquery-3.2.1.min.js"></script>-->
+<!--===============================================================================================-->
+	<script src="vendor/animsition/js/animsition.min.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/bootstrap/js/popper.js"></script>
+	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/select2/select2.min.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/daterangepicker/moment.min.js"></script>
+	<script src="vendor/daterangepicker/daterangepicker.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/countdowntime/countdowntime.js"></script>
+<!--===============================================================================================-->
+	<script src="js/main.js"></script>
+
+</body>
+</html>
